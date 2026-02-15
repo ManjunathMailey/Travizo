@@ -1,0 +1,70 @@
+<section class="hero">
+  <div class="hero-content">
+    <h1>Plan. Book. Travel — All in One Place</h1>
+    <p class="hero-sub">Personalized itineraries ·
+       Real-time availability · Secure payments · 24/7 support · Best-price guarantee</p>
+    <p>Compare flights, hotels and tours, customize your trip, and book with confidence.</p>
+    <div class="hero-actions">
+      <button routerLink="/destinations">Explore Destinations</button>
+      <button routerLink="/booking" class="primary">Start Booking</button>
+    </div>
+    <div class="trip-links">
+      <a routerLink="/destinations" fragment="day-wise" class="link">Solo Trips Trips</a>
+      <span class="sep">·</span>
+      <a routerLink="/destinations" fragment="city-wise" class="link">Group Trips Trips</a>
+    </div>
+  </div>
+</section>
+
+<section class="trips">
+  <div class="container">
+    <h2>Popular Trips We Plan</h2>
+    <p class="trips-sub">Handpicked itineraries for memorable getaways — book day-wise or city-wise packages.</p>
+    <div class="trip-grid">
+      <article class="trip-card">
+        <div class="trip-media" style="background-image: url('/assets/background.jpg')"></div>
+        <h3>Ooty</h3>
+        <p>3 days · Tea gardens, Nilgiri Mountain Railway</p>
+        <a routerLink="/booking" class="card-btn">View Packages</a>
+      </article>
+
+      <article class="trip-card">
+        <div class="trip-media" style="background-image: url('/assets/kodaikanal.avif')"></div>
+        <h3>Kodaikanal</h3>
+        <p>3 days · Lakes, waterfalls and hill views</p>
+        <a routerLink="/booking" class="card-btn">View Packages</a>
+      </article>
+
+      <article class="trip-card">
+        <div class="trip-media" style="background-image: url('/assets/munnar.jpg')"></div>
+        <h3>Munnar</h3>
+        <p>4 days · Tea estates, trekking and viewpoints</p>
+        <a routerLink="/booking" class="card-btn">View Packages</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container footer-inner">
+    <div class="footer-col">
+  <div class="logo">PlanMyJourney</div>
+      <h4></h4>
+      <p>Plan, book and travel with confidence. Personalized itineraries and 24/7 support.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a routerLink="/destinations">Destinations</a></li>
+        <li><a routerLink="/booking">Book Tour</a></li>
+        <li><a routerLink="/about-us">About</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <p>Email: support@planmyjourney.com</p>
+      <p>Phone: +91 12345 67890</p>
+    </div>
+  </div>
+  <div class="footer-bottom">© <span id="year"></span> PlanMyJourney — All rights reserved.</div>
+</footer>
