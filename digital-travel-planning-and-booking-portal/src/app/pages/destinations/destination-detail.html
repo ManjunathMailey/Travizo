@@ -1,0 +1,63 @@
+<section class="detail-hero" *ngIf="destination; else missing" [style.background-image]="'url(' + destination.image + ')'">
+  <div class="overlay container">
+    <button class="back-btn" routerLink="/destinations">← Back</button>
+    <h1>{{destination.name}}</h1>
+    <p class="meta">{{destination.type}} · {{destination.duration}} · {{destination.popularity}}★</p>
+    <a routerLink="/booking" [queryParams]="{ destination: destination.name }" class="primary book-now">
+      Book This Trip
+    </a>
+  </div>
+</section>
+
+<ng-template #missing>
+  <div class="container">
+    <button class="back-btn" routerLink="/destinations">← Back to destinations</button>
+    <h2>Destination not found</h2>
+    <p>Please choose another trip from the list.</p>
+  </div>
+</ng-template>
+
+<!-- main content area split into two columns on wide screens -->
+<div class="content container" *ngIf="destination">
+  <div class="left">
+    <p class="summary">{{destination.summary}}</p>
+    <p *ngIf="destination.details" class="longdesc">{{destination.details}}</p>
+
+    <div *ngIf="destination.gallery && destination.gallery.length" class="gallery">
+      <img *ngFor="let img of destination.gallery" [src]="img" alt="{{destination.name}}" />
+    </div>
+  </div>
+
+  <div class="right">
+    <section class="itinerary">
+      <h2>Itinerary</h2>
+      <div *ngFor="let day of destination.itinerary" class="itinerary-day">
+        <strong>Day {{day.day}}</strong>
+        <ul>
+          <li *ngFor="let act of day.activities">{{act}}</li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="map-section">
+      <h2>Location</h2>
+      <div class="map-wrap">
+        <iframe width="100%" height="300" [src]="mapUrl" loading="lazy"></iframe>
+      </div>
+    </section>
+
+    <section class="extras">
+      <h2>More Info</h2>
+      <p><strong>Nearby:</strong> {{destination.nearby.join(', ')}}</p>
+      <p><strong>Cuisine:</strong> {{destination.food.join(', ')}}</p>
+      <p><strong>Stays:</strong> {{destination.stays.join(', ')}}</p>
+      <p *ngIf="destination.safaris && destination.safaris.length"><strong>Safaris/Excursions:</strong> {{destination.safaris.join(', ')}}</p>
+    </section>
+
+    <section class="book bottom">
+      <a routerLink="/booking" [queryParams]="{ destination: destination.name }" class="primary">
+        Book This Trip
+      </a>
+    </section>
+  </div>
+</div>

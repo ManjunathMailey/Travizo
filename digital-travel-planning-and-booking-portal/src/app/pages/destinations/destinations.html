@@ -1,1 +1,59 @@
-<p>destinations works!</p>
+<section class="dest-hero">
+	<div class="container">
+		<h1>Explore Destinations</h1>
+		<p class="sub">Discover curated places, itineraries and tours — filter and search to find the perfect trip.</p>
+
+		<div class="controls">
+			<input type="search" placeholder="Search destinations or keywords" (input)="searchTerm = $any($event.target).value" />
+			<select (change)="filter = $any($event.target).value">
+				<option value="all">All Types</option>
+				<option value="Hill Station">Hill Station</option>
+				<option value="Beach">Beach</option>
+				<option value="Heritage">Heritage</option>
+				<option value="Backwater">Backwater</option>
+				<option value="City">City</option>
+			</select>
+		</div>
+	</div>
+</section>
+
+<section class="dest-list container">
+	<h2>Available Destinations</h2>
+	<div class="grid">
+		<article class="card" *ngFor="let d of filteredDestinations">
+			<div class="card-media" [style.background-image]="'url(' + d.image + ')'"> </div>
+			<div class="card-body">
+				<h3>{{d.name}}</h3>
+					<p class="meta">{{d.type}} · {{d.duration}} · {{d.popularity}}★</p>
+					<p class="summary">{{d.summary}}</p>
+					<div class="card-actions">
+						<a routerLink="/booking" [queryParams]="{ destination: d.name }" class="primary">Book the Trip</a>
+						<button class="details-btn" (click)="viewDetails(d)">View Details</button>
+				</div>
+			</div>
+		</article>
+	</div>
+</section>
+
+<footer class="site-footer">
+	<div class="container footer-inner">
+		<div class="footer-col">
+			<div class="logo">PlanMyJourney</div>
+			<p>Plan, book and travel with confidence. Personalized itineraries and 24/7 support.</p>
+		</div>
+		<div class="footer-col">
+			<h4>Quick Links</h4>
+			<ul>
+				<li><a routerLink="/destinations">Destinations</a></li>
+				<li><a routerLink="/booking">Book Tour</a></li>
+				<li><a routerLink="/about-us">About</a></li>
+			</ul>
+		</div>
+		<div class="footer-col">
+			<h4>Contact</h4>
+			<p>Email: support@planmyjourney.com</p>
+			<p>Phone: +91 98765 43210</p>
+		</div>
+	</div>
+	<div class="footer-bottom">© <span id="year"></span> PlanMyJourney — All rights reserved.</div>
+</footer>

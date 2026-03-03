@@ -27,6 +27,15 @@
 .nav-links a:hover {
   color: #facc15;
 }
+
+/* Active link styling */
+.nav-links a.active {
+  color: #facc15;
+  font-weight: 700;
+  border-bottom: 2px solid #facc15;
+  padding-bottom: 2px;
+}
+
 @media (max-width: 768px) {
   .nav-links {
     flex-direction: column;

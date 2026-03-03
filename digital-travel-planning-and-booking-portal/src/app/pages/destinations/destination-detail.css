@@ -1,0 +1,68 @@
+:host {
+  /* make primary colors available to this component (global root was empty) */
+  --primary: #1e3a8a;
+  --accent: #facc15;
+}
+
+.detail-hero{
+  position: relative;
+  color: white;
+  padding: 0;
+  background-size: cover;
+  background-position: center;
+}
+.detail-hero .overlay{
+  background:rgba(0,0,0,0.5);
+  padding:60px 20px;
+  text-align:center;
+}
+.detail-hero .overlay .container{max-width:900px;margin:0 auto;}
+.back-btn{background:transparent;border:none;color:var(--accent);cursor:pointer;font-size:14px;margin-bottom:10px}
+.back-btn:hover{text-decoration:underline}
+.meta{color:#e5e7eb;font-size:14px;margin:4px 0}
+.summary{margin:12px 0}
+.longdesc{margin:12px 0;color:#374151}
+.gallery{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  padding:10px 0;
+}
+.gallery img{
+  width:calc(50% - 6px);
+  height:200px;
+  border-radius:6px;
+  object-fit:cover;
+}
+.gallery img:nth-child(n+3){
+  width:calc(33.333% - 8px);
+  height:140px;
+}
+.itinerary{margin-top:24px}
+.itinerary-day{margin-bottom:12px}
+.itinerary-day ul{padding-left:18px;list-style:disc}
+.map-section{margin-top:24px}
+.map-wrap{border:1px solid #e5e7eb;border-radius:6px;overflow:hidden}
+.extras{margin-top:24px}
+.extras p{margin:4px 0}
+.book{
+  margin:24px 0;text-align:center;
+}
+.book a.primary{
+  padding:10px 20px;border-radius:6px;background:var(--primary);color:white;text-decoration:none;
+}
+/* two-column layout for content */
+.content{display:flex;flex-wrap:wrap;gap:24px;margin-top:30px}
+.content .left{flex:1 1 300px}
+.content .right{flex:1 1 300px}
+@media (max-width: 800px){
+  .content{flex-direction:column}
+}
+.book-now{margin-top:16px;display:inline-block}
+.book-now a.primary, .book.bottom a.primary {
+  background:white;
+  color:var(--primary);
+  border:1px solid var(--primary);
+}
+.book.bottom{margin-top:32px;text-align:center}
+
