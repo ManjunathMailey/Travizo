@@ -1,6 +1,140 @@
-<div class="booking-page">
+<section class="booking-page">
   <h1>Book a Tour</h1>
-  <p *ngIf="destination">Planning for <strong>{{destination}}</strong></p>
-  <!-- Form fields would go here -->
-  <p class="note">(Form implementation pending)</p>
-</div>
+  <div class="booking-container">
+    <div class="booking-form">
+      <p *ngIf="destination" class="chosen-dest">Planning for <strong>{{destination}}</strong></p>
+
+      <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input id="name" type="text" formControlName="name" />
+          <div class="error" *ngIf="submitted && f['name'].errors">
+            <span *ngIf="f['name'].errors['required']">Name is required.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input id="email" type="email" formControlName="email" />
+          <div class="error" *ngIf="submitted && f['email'].errors">
+            <span *ngIf="f['email'].errors['required']">Email is required.</span>
+            <span *ngIf="f['email'].errors['email']">Enter a valid email address.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input id="phone" type="tel" formControlName="phone" />
+          <div class="error" *ngIf="submitted && f['phone'].errors">
+            <span *ngIf="f['phone'].errors['required']">Phone number is required.</span>
+            <span *ngIf="f['phone'].errors['pattern']">Enter a valid 10-digit phone number.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="date">Travel Date</label>
+          <input id="date" type="date" formControlName="date" />
+          <div class="error" *ngIf="submitted && f['date'].errors">
+            <span *ngIf="f['date'].errors['required']">Date is required.</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="people">Number of People</label>
+          <input id="people" type="number" min="1" formControlName="people" />
+          <div class="error" *ngIf="submitted && f['people'].errors">
+            <span *ngIf="f['people'].errors['required']">Please specify number of people.</span>
+            <span *ngIf="f['people'].errors['min']">At least one person is required.</span>
+          </div>
+        </div>
+
+        <div class="form-group" *ngIf="!destination">
+          <label for="destination">Destination</label>
+          <input id="destination" type="text" formControlName="destination" />
+          <div class="error" *ngIf="submitted && f['destination'].errors">
+            <span *ngIf="f['destination'].errors['required']">Destination is required.</span>
+          </div>
+        </div>
+
+        <button type="submit" class="primary">Submit Booking</button>
+      </form>
+
+      <div class="success" *ngIf="successMessage">
+        {{ successMessage }}
+      </div>
+    </div>
+
+    <aside class="destination-details">
+      <div *ngIf="destinationData; else defaultContent" class="dest-card">
+        <div class="img" [style.background-image]="'url(' + destinationData.image + ')'">
+        </div>
+        <div class="info">
+          <h2>{{ destinationData.name }}</h2>
+          <p class="summary">{{ destinationData.summary }}</p>
+          <p>{{ destinationData.details }}</p>
+          <h4>Available tours</h4>
+          <ul class="tour-list">
+            <li>Standard sightseeing package</li>
+            <li>Adventure combo (trek + boating)</li>
+            <li>Family-friendly itinerary</li>
+          </ul>
+          <h4>Highlights</h4>
+          <ul>
+            <li *ngFor="let item of destinationData.itinerary">
+              Day {{item.day}}: {{ item.activities.join(', ') }}
+            </li>
+          </ul>
+        </div>
+      </div>
+      <ng-template #defaultContent>
+        <div class="default-content">
+          <div class="welcome-section">
+            <h2>Plan Your Perfect Trip</h2>
+            <p>Welcome to <strong>PlanMyJourney</strong> – your trusted travel companion for unforgettable adventures across India and beyond.</p>
+          </div>
+          
+          <div class="about-section">
+            <h3>Why Book With Us?</h3>
+            <ul>
+              <li>✓ Curated destinations & expert itineraries</li>
+              <li>✓ Affordable package rates</li>
+              <li>✓ 24/7 customer support</li>
+              <li>✓ Flexible booking & cancellation</li>
+              <li>✓ Best price guarantee</li>
+            </ul>
+          </div>
+
+          <div class="packages-section">
+            <h3>Our Trip Packages</h3>
+            <div class="package-card">
+              <h4>🏔️ Standard Package</h4>
+              <p class="price">₹15,000 - ₹25,000</p>
+              <p>3 days, or 4 days sightseeing & local experiences</p>
+            </div>
+            <div class="package-card">
+              <h4>🎯 Adventure Package</h4>
+              <p class="price">₹25,000 - ₹40,000</p>
+              <p>4 days or 5 days, trekking, water sports & camping</p>
+            </div>
+            <div class="package-card">
+              <h4>👨‍👩‍👧‍👦 Family Package</h4>
+              <p class="price">₹20,000 - ₹35,000</p>
+              <p>4 days or 5 days, kid-friendly activities & relaxation</p>
+            </div>
+          </div>
+
+          <div class="next-step">
+            <p><strong>Ready?</strong> Enter your details on the left and select a destination to proceed with booking.</p>
+          </div>
+        </div>
+      </ng-template>
+    </aside>
+  </div>
+</section>
+
+<!-- Login Modal -->
+<app-login-modal 
+  *ngIf="showLoginModal"
+  (close)="onLoginModalClose()"
+  (loginSuccess)="onLoginSuccess()">
+</app-login-modal>

@@ -200,6 +200,45 @@ export const DESTINATIONS: Destination[] = [
   },
   {
     id: 10,
+    name: 'Goa',
+    type: 'Beach',
+    duration: '4 days',
+    popularity: 5,
+    image: '/assets/goa.jpg',
+    coords: '15.2993,74.1240',
+    summary: 'Sun-kissed beaches, lively nightlife and Portuguese heritage.',
+    details: 'Goa is India’s party capital by day and relaxed coastline by evening. From water sports and beach shacks to historic churches and spice farms, it offers something for every traveller. Avoid the crowds by visiting quieter beaches in the south.',
+    itinerary: [
+      { day: 1, activities: ['Arrival & Baga beach', 'Calangute market'] },
+      { day: 2, activities: ['Old Goa churches', 'Spice plantation tour'] },
+      { day: 3, activities: ['South Goa beaches (Palolem)', 'Yoga session'] },
+      { day: 4, activities: ['Water sports', 'Departure'] }
+    ],
+    nearby: ['Dudhsagar Falls', 'Anjuna Flea Market'],
+    food: ['Goan fish curry', 'Feni', 'Bebinca dessert'],
+    stays: ['Beach huts', 'Luxury resorts']
+  },
+  {
+    id: 11,
+    name: 'Jaipur',
+    type: 'Heritage',
+    duration: '3 days',
+    popularity: 5,
+    image: '/assets/jaipur.jpg',
+    coords: '26.9124,75.7873',
+    summary: 'Pink City with forts, palaces and royal culture.',
+    details: 'Jaipur, the capital of Rajasthan, dazzles with its pink-hued architecture, majestic forts and bustling bazaars. Explore the Amber Fort, City Palace and shop for handicrafts in the old city lanes.',
+    itinerary: [
+      { day: 1, activities: ['Amber Fort', 'Panna Meena ka Kund'] },
+      { day: 2, activities: ['City Palace museum', 'Jantar Mantar'] },
+      { day: 3, activities: ['Hawa Mahal', 'Shopping in Johari Bazaar'] }
+    ],
+    nearby: ['Ajmer', 'Pushkar'],
+    food: ['Rajasthani thali', 'Laal maas'],
+    stays: ['Heritage hotels', 'Havelis']
+  },
+  {
+    id: 13,
     name: 'Kodaikanal Extended',
     type: 'Hill Station',
     duration: '5 days',
@@ -220,7 +259,7 @@ export const DESTINATIONS: Destination[] = [
     safaris: ['Hill area jeep safari']
   },
   {
-    id: 11,
+    id: 14,
     name: 'Goa Beaches',
     type: 'Beach',
     duration: '4 days',

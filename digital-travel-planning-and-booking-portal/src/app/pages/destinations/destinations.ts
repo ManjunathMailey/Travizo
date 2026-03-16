@@ -8,7 +8,7 @@ import { Destination, DESTINATIONS } from './destinations-data';
   selector: 'app-destinations',
   imports: [CommonModule, RouterLink],
   templateUrl: './destinations.html',
-  styleUrl: './destinations.page.css',
+  styleUrls: ['./destinations.page.css'],
 })
 export class DestinationsComponent {
   searchTerm: string = '';

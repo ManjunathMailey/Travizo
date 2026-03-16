@@ -1,0 +1,279 @@
+.booking-page {
+  padding: 1rem 2rem;
+  background: #fefefe;
+}
+
+.booking-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  align-items: stretch;
+}
+
+.booking-form,
+.destination-details {
+  flex: 1 1 50%;
+  min-width: 320px;
+  box-sizing: border-box;
+  padding: 2rem;
+}
+
+.booking-form {
+  background: #fafafa;
+  border-right: 2px solid #ddd;
+}
+
+.destination-details {
+  background: #fff;
+}
+
+/* form header highlight */
+.chosen-dest {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.placeholder {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-style: italic;
+}
+
+.destination-details .dest-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.08);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.destination-details .img {
+  width: 100%;
+  height: 220px;
+  background-size: cover;
+  background-position: center;
+}
+
+.destination-details .info {
+  padding: 1.25rem;
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.destination-details h2 {
+  margin-top: 0;
+}
+
+.destination-details .summary {
+  font-style: italic;
+  color: #555;
+  margin-bottom: .75rem;
+}
+
+.tour-list {
+  list-style-type: square;
+  margin-left: 1.25rem;
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+/* Default content when no destination selected */
+.default-content {
+  padding: 1.25rem;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.welcome-section {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.welcome-section h2 {
+  margin-top: 0;
+  font-size: 1.6rem;
+}
+
+.welcome-section p {
+  margin-bottom: 0;
+}
+
+.about-section {
+  background: #f0f4ff;
+  padding: 1.25rem;
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+}
+
+.about-section h3 {
+  margin-top: 0;
+  color: #333;
+}
+
+.about-section ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.about-section li {
+  padding: .5rem 0;
+  color: #555;
+}
+
+.packages-section {
+  margin-bottom: 1.5rem;
+}
+
+.packages-section h3 {
+  color: #333;
+  margin-bottom: 1rem;
+}
+
+.package-card {
+  background: #fff;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: .75rem;
+  transition: all 0.3s ease;
+}
+
+.package-card:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+}
+
+.package-card h4 {
+  margin-top: 0;
+  color: #333;
+  margin-bottom: .25rem;
+}
+
+.package-card .price {
+  font-weight: bold;
+  color: #667eea;
+  font-size: 1.1rem;
+  margin: .25rem 0;
+}
+
+.package-card p {
+  margin: .5rem 0;
+  color: #666;
+  font-size: .95rem;
+}
+
+.next-step {
+  background: #fff3cd;
+  border-left: 4px solid #ffc107;
+  padding: 1rem;
+  border-radius: 4px;
+  color: #333;
+}
+
+.next-step p {
+  margin: 0;
+}
+
+@media (max-width: 800px) {
+  .booking-container {
+    flex-direction: column;
+  }
+  .booking-form {
+    border-right: none;
+    border-bottom: 1px solid #ddd;
+  }
+}
+
+.destination-details .dest-card {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.1);
+  overflow: hidden;
+}
+
+.destination-details .img {
+  width: 100%;
+  height: 200px;
+  background-size: cover;
+  background-position: center;
+}
+
+.destination-details .info {
+  padding: 1rem;
+}
+
+.tour-list {
+  list-style-type: square;
+  margin-left: 1.25rem;
+  color: #333;
+}
+
+.destination-details h2 {
+  margin-top: 0;
+}
+
+.destination-details .summary {
+  font-style: italic;
+  color: #555;
+}
+
+
+.form-group {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  margin-bottom: .25rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+input[type="number"] {
+  padding: .5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+button.primary {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: .75rem 1.5rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+button.primary:hover {
+  background: #0056b3;
+}
+
+.error {
+  color: #d9534f;
+  font-size: .875rem;
+}
+
+.success {
+  margin-top: 1rem;
+  padding: .75rem;
+  background: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+  border-radius: 4px;
+}

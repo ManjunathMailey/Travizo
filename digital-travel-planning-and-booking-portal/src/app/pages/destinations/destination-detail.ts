@@ -9,7 +9,7 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   selector: 'app-destination-detail',
   imports: [CommonModule, RouterLink],
   templateUrl: './destination-detail.html',
-  styleUrl: './destination-detail.css',
+  styleUrls: ['./destination-detail.css'],
 })
 export class DestinationDetailComponent {
   destination: Destination | null = null;
