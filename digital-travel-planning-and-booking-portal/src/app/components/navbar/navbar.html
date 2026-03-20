@@ -1,9 +1,77 @@
+<header class="navbar" [class.scrolled]="isScrolled" role="banner">
+  <div class="navbar-inner container">
 
-<nav class="navbar">
-  <div class="logo">PlanMyJourney</div>
-  <ul class="nav-links">
-    <li><a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}">Home</a></li>
-    <li><a routerLink="/destinations" routerLinkActive="active">Destinations</a></li>
-    <li><a routerLink="/booking" routerLinkActive="active">Book Tour</a></li>
-    <li><a routerLink="/about" routerLinkActive="active">About</a></li>
-    <li><a routerLink="/contact" routerLinkActive="active">Contact</a></li>
+    <!-- Logo -->
+    <a routerLink="/" class="navbar-logo" aria-label="PlanMyJourney — Home" (click)="closeMobileMenu()">
+      <svg class="logo-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M12 2L9 7H5L7 11L4 20L12 16L20 20L17 11L19 7H15L12 2Z" fill="currentColor"/>
+        <path d="M12 6L10.5 9H7.5L9 12L7.5 18L12 15.5L16.5 18L15 12L16.5 9H13.5L12 6Z" fill="white" opacity="0.3"/>
+      </svg>
+      <span>PlanMyJourney</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="navbar-nav" role="navigation" aria-label="Main navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link" (click)="closeMobileMenu()">Home</a>
+      <a routerLink="/destinations" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Destinations</a>
+      <a routerLink="/booking" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Book a Tour</a>
+      <a routerLink="/about" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">About</a>
+      <a routerLink="/contact" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Contact</a>
+    </nav>
+
+    <!-- Auth Actions -->
+    <div class="navbar-actions">
+      <ng-container *ngIf="currentUser; else loginBtn">
+        <span class="user-greeting">Hi, {{ currentUser.name }}</span>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+      </ng-container>
+      <ng-template #loginBtn>
+        <button class="btn-login" (click)="openLoginModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Login
+        </button>
+      </ng-template>
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button class="hamburger" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen" aria-label="Toggle navigation menu">
+      <span class="bar" [class.open]="isMobileMenuOpen"></span>
+      <span class="bar" [class.open]="isMobileMenuOpen"></span>
+      <span class="bar" [class.open]="isMobileMenuOpen"></span>
+    </button>
+  </div>
+
+  <!-- Golden accent line -->
+  <div class="navbar-accent-line"></div>
+</header>
+
+<!-- Mobile Overlay Menu -->
+<div class="mobile-menu" [class.open]="isMobileMenuOpen" role="dialog" aria-label="Mobile navigation">
+  <div class="mobile-menu-bg"></div>
+  <nav class="mobile-nav" role="navigation" aria-label="Mobile main navigation">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="mobile-nav-link" (click)="closeMobileMenu()">Home</a>
+    <a routerLink="/destinations" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">Destinations</a>
+    <a routerLink="/booking" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">Book a Tour</a>
+    <a routerLink="/about" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">About</a>
+    <a routerLink="/contact" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">Contact</a>
+    <div class="mobile-auth">
+      <ng-container *ngIf="currentUser; else mobileLoginBtn">
+        <span class="mobile-user">Hi, {{ currentUser.name }}</span>
+        <button class="mobile-btn-logout" (click)="logout()">Logout</button>
+      </ng-container>
+      <ng-template #mobileLoginBtn>
+        <button class="mobile-btn-login" (click)="openLoginModal()">Login / Sign Up</button>
+      </ng-template>
+    </div>
+  </nav>
+</div>
+
+<!-- Login Modal -->
+<app-login-modal
+  *ngIf="showLoginModal"
+  (close)="closeLoginModal()"
+  (loginSuccess)="onLoginSuccess()">
+</app-login-modal>

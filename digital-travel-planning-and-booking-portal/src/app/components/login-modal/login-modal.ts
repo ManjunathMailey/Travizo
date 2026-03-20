@@ -8,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login-modal',
   imports: [CommonModule, FormsModule],
   templateUrl: './login-modal.html',
-  styleUrls: ['./login-modal.css']
+  styleUrl: './login-modal.css',
 })
 export class LoginModalComponent {
   @Output() close = new EventEmitter<void>();
@@ -16,12 +16,10 @@ export class LoginModalComponent {
 
   isLogin = true;
 
-  // Login
   loginEmail = '';
   loginPassword = '';
   loginError = '';
 
-  // Signup
   signupName = '';
   signupEmail = '';
   signupPhone = '';
@@ -32,13 +30,13 @@ export class LoginModalComponent {
   onLogin() {
     this.loginError = '';
     if (!this.loginEmail || !this.loginPassword) {
-      this.loginError = 'Please enter email and password';
+      this.loginError = 'Please enter your email and password.';
       return;
     }
     if (this.authService.login(this.loginEmail, this.loginPassword)) {
       this.loginSuccess.emit();
     } else {
-      this.loginError = 'Invalid email or password';
+      this.loginError = 'Invalid email or password.';
     }
   }
 

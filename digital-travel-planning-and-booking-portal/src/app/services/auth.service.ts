@@ -2,64 +2,70 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
 export interface User {
+  id: string;
   email: string;
   name: string;
-  phone: string;
+  phone?: string;
+  avatar?: string;
 }
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private currentUser = new BehaviorSubject<User | null>(this.loadUserFromStorage());
-  public currentUser$ = this.currentUser.asObservable();
+  private currentUserSubject = new BehaviorSubject<User | null>(this.loadUserFromStorage());
+  readonly currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor() {}
-
-  // Check if user is logged in
   isLoggedIn(): boolean {
-    return !!this.currentUser.value;
+    return !!this.currentUserSubject.value;
   }
 
-  // Get current user
   getCurrentUser(): User | null {
-    return this.currentUser.value;
+    return this.currentUserSubject.value;
   }
 
-  // Mock signup
-  signup(email: string, password: string, name: string, phone: string): void {
-    const user: User = { email, name, phone };
-    this.currentUser.next(user);
-    this.saveUserToStorage(user);
-  }
-
-  // Mock login
   login(email: string, password: string): boolean {
-    // In a real app, this would authenticate against a backend
-    // Mock validation: just check email and password are not empty
     if (email && password) {
-      const user: User = { email, name: email.split('@')[0], phone: '' };
-      this.currentUser.next(user);
+      const user: User = {
+        id: 'user-' + Math.random().toString(36).substr(2, 9),
+        email,
+        name: email.split('@')[0],
+      };
+      this.currentUserSubject.next(user);
       this.saveUserToStorage(user);
       return true;
     }
     return false;
   }
 
-  // Logout
+  signup(email: string, password: string, name: string, phone: string): void {
+    const user: User = {
+      id: 'user-' + Math.random().toString(36).substr(2, 9),
+      email,
+      name,
+      phone,
+    };
+    this.currentUserSubject.next(user);
+    this.saveUserToStorage(user);
+  }
+
   logout(): void {
-    this.currentUser.next(null);
-    localStorage.removeItem('planmyjourney_user');
+    this.currentUserSubject.next(null);
+    localStorage.removeItem('pmj_user');
   }
 
-  // Save user to localStorage
   private saveUserToStorage(user: User): void {
-    localStorage.setItem('planmyjourney_user', JSON.stringify(user));
+    try {
+      localStorage.setItem('pmj_user', JSON.stringify(user));
+    } catch {
+      // localStorage unavailable (SSR / private browsing)
+    }
   }
 
-  // Load user from localStorage
   private loadUserFromStorage(): User | null {
-    const stored = localStorage.getItem('planmyjourney_user');
-    return stored ? JSON.parse(stored) : null;
+    try {
+      const stored = localStorage.getItem('pmj_user');
+      return stored ? (JSON.parse(stored) as User) : null;
+    } catch {
+      return null;
+    }
   }
 }

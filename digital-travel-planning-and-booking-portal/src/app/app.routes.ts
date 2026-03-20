@@ -13,4 +13,5 @@ export const routes: Routes = [
   { path: 'booking', component: BookingComponent },
   { path: 'contact', component: ContactComponent },
   { path: 'about', component: AboutUsComponent },
+  { path: '**', redirectTo: '' },
 ];

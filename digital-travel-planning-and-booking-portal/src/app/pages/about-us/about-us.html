@@ -1,77 +1,111 @@
-<section class="about-hero">
-  <div class="container">
-    <h1>About PlanMyJourney</h1>
-    <p>We build intuitive travel planning experiences that make exploring the world easy, fun and reliable.</p>
+<!-- ─── Hero ─── -->
+<section class="about-hero grain-overlay" aria-label="About us hero">
+  <div class="about-hero-bg"></div>
+  <div class="about-hero-overlay"></div>
+  <div class="about-hero-content">
+    <p class="about-hero-eyebrow">SINCE 2018</p>
+    <h1 class="about-hero-title">Our Story</h1>
+    <p class="about-hero-sub">A passion for the Western Ghats became a mission to share its magic with the world</p>
   </div>
 </section>
 
-<section class="about-content container">
-  <h2>Our Mission</h2>
-  <p>At PlanMyJourney, we believe that travel should be stress-free, affordable, and unforgettable. Our mission is to empower travellers with curated destinations, flexible booking options, and exceptional customer support.</p>
-
-  <h2>Why Choose Us?</h2>
-  <div class="features-grid">
-    <div class="feature-card">
-      <div class="feature-icon">🗺️</div>
-      <h3>Curated Destinations</h3>
-      <p>Hand-picked places across India with detailed itineraries, local tips, and hidden gems.</p>
+<!-- ─── Mission Section ─── -->
+<section class="mission-section" aria-labelledby="mission-heading">
+  <div class="container mission-grid">
+    <div class="mission-image-wrap" animateOnScroll>
+      <img
+        src="https://images.unsplash.com/photo-1501854140801-50d01698950b?w=800&q=80"
+        alt="Aerial view of lush green Western Ghats valleys and mist"
+        loading="lazy"
+        decoding="async"
+        class="mission-image"
+      />
     </div>
-    <div class="feature-card">
-      <div class="feature-icon">💰</div>
-      <h3>Affordable Rates</h3>
-      <p>Best price guarantee with transparent pricing and no hidden charges.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">🛡️</div>
-      <h3>Secure Booking</h3>
-      <p>Safe and secure payment process with multiple options and instant confirmation.</p>
-    </div>
-    <div class="feature-card">
-      <div class="feature-icon">📞</div>
-      <h3>24/7 Support</h3>
-      <p>Round-the-clock customer support to help you before, during, and after your trip.</p>
-    </div>
-  </div>
-
-  <h2>Our Values</h2>
-  <ul>
-    <li><strong>Authenticity</strong> – We showcase real, unfiltered travel experiences</li>
-    <li><strong>Affordability</strong> – Travel shouldn't break the bank</li>
-    <li><strong>Sustainability</strong> – We promote responsible tourism</li>
-    <li><strong>Community</strong> – We support local businesses and cultures</li>
-  </ul>
-
-  <h2>Meet Our Team</h2>
-  <div class="team-grid">
-    <div class="team-member">
-      <div class="member-avatar">👨‍💼</div>
-      <h4>Rahul Kumar</h4>
-      <p>Founder & CEO</p>
-      <p class="member-bio">Travel enthusiast with 10+ years of industry experience.</p>
-    </div>
-    <div class="team-member">
-      <div class="member-avatar">👩‍💻</div>
-      <h4>Priya Sharma</h4>
-      <p>Lead Developer</p>
-      <p class="member-bio">Full-stack engineer passionate about user-centric design.</p>
-    </div>
-    <div class="team-member">
-      <div class="member-avatar">👩‍🔬</div>
-      <h4>Anjali Patel</h4>
-      <p>Travel Curator</p>
-      <p class="member-bio">Expert in destination research and itinerary planning.</p>
+    <div class="mission-text" animateOnScroll>
+      <h2 id="mission-heading" class="section-title">Born from a Love for the<br>Western Ghats</h2>
+      <p>
+        PlanMyJourney started as a weekend hiking blog in 2018 — a place where a group of friends from Bengaluru documented their adventures across the misty peaks of Munnar, the coffee-scented valleys of Coorg, and the silent backwaters of Alleppey.
+      </p>
+      <p>
+        What began as personal passion quickly became something more. Readers started writing in, asking for help planning their own trips. We realised that South India's most extraordinary experiences were hidden behind logistical complexity — the language barriers, the off-road routes, the seasonal windows that guidebooks never mention.
+      </p>
+      <p>
+        So we built PlanMyJourney to solve exactly that. A team of local experts, sustainable travel advocates, and passionate storytellers — all united by one belief: that the most transformative journeys happen when you travel with knowledge, respect, and genuine curiosity.
+      </p>
+      <a routerLink="/destinations" class="btn-discover">Discover Our Destinations</a>
     </div>
   </div>
+</section>
 
-  <h2>What Our Customers Say</h2>
-  <div class="testimonials">
-    <div class="testimonial">
-      <p>"Amazing platform! The Ooty package was perfect for our family trip. Highly recommended!"</p>
-      <p class="testimonial-author">— Arun M.</p>
+<!-- ─── Values Section ─── -->
+<section class="values-section" aria-labelledby="values-heading">
+  <div class="container">
+    <div class="section-header" animateOnScroll>
+      <h2 id="values-heading" class="section-title-centered">What We Stand For</h2>
+      <div class="title-underline" aria-hidden="true"></div>
     </div>
-    <div class="testimonial">
-      <p>"Best travel booking experience I've had. Great prices and excellent customer support."</p>
-      <p class="testimonial-author">— Sneha R.</p>
+    <div class="values-grid">
+      <div class="value-card" *ngFor="let val of values" animateOnScroll>
+        <div class="value-emoji" aria-hidden="true">{{ val.emoji }}</div>
+        <h3 class="value-title">{{ val.title }}</h3>
+        <p class="value-desc">{{ val.desc }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Stats Section ─── -->
+<section class="stats-section" aria-labelledby="stats-heading" animateOnScroll>
+  <div class="container">
+    <h2 id="stats-heading" class="sr-only">Our impact in numbers</h2>
+    <div class="stats-grid">
+      <div class="stat-item" *ngFor="let stat of stats">
+        <div class="stat-number" aria-label="{{ stat.number }} {{ stat.label }}">{{ stat.number }}</div>
+        <div class="stat-label">{{ stat.label }}</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Team Section ─── -->
+<section class="team-section" aria-labelledby="team-heading">
+  <div class="container">
+    <div class="section-header" animateOnScroll>
+      <h2 id="team-heading" class="section-title-centered">The People Behind Your Adventures</h2>
+      <div class="title-underline" aria-hidden="true"></div>
+      <p class="section-subtitle">Locals, storytellers, and passionate adventurers — all here for you.</p>
+    </div>
+    <div class="team-grid">
+      <article class="team-card" *ngFor="let member of team" animateOnScroll>
+        <div class="team-avatar-wrap">
+          <img
+            [src]="member.img"
+            [alt]="member.name + ', ' + member.role"
+            loading="lazy"
+            decoding="async"
+            class="team-avatar"
+          />
+        </div>
+        <div class="team-body">
+          <h3 class="team-name">{{ member.name }}</h3>
+          <p class="team-role">{{ member.role }}</p>
+          <p class="team-bio">{{ member.bio }}</p>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA Banner ─── -->
+<section class="about-cta" aria-labelledby="about-cta-heading">
+  <div class="about-cta-bg"></div>
+  <div class="about-cta-overlay"></div>
+  <div class="about-cta-content container" animateOnScroll>
+    <h2 id="about-cta-heading" class="about-cta-title">Ready to Begin Your Journey?</h2>
+    <p class="about-cta-sub">Let's craft the perfect South India itinerary together.</p>
+    <div class="about-cta-btns">
+      <a routerLink="/booking" class="cta-btn-primary">Book Your Trip</a>
+      <a routerLink="/contact" class="cta-btn-secondary">Talk to an Expert</a>
     </div>
   </div>
 </section>
