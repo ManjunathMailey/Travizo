@@ -1,0 +1,246 @@
+<!-- ═══ SECTION A: HERO ═══ -->
+<section class="hero grain-overlay" aria-label="Hero banner">
+  <div class="hero-slides" aria-hidden="true">
+    <div
+      *ngFor="let img of heroImages; let i = index"
+      class="hero-slide"
+      [class.active]="heroIndex === i"
+      [style.background-image]="'url(' + img + ')'"
+    ></div>
+  </div>
+  <div class="hero-overlay"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">EXPLORE INDIA — Hill Stations, Beaches, Heritage &amp; BEYOND</p>
+    <h1 class="hero-headline">Where Mountains<br>Meet the Clouds</h1>
+    <p class="hero-subtitle">
+      Discover hidden trails, misty peaks, and ancient forests across<br>
+       India's most breathtaking landscapes.
+    </p>
+    <a routerLink="/destinations" class="hero-cta">
+      Start Your Journey
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+  <div class="scroll-indicator" aria-hidden="true">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+      <polyline points="6 9 12 15 18 9"/>
+    </svg>
+  </div>
+</section>
+
+<!-- ═══ SECTION B: FEATURE STRIP ═══ -->
+<section class="features" aria-labelledby="features-heading">
+  <div class="container">
+    <h2 id="features-heading" class="sr-only">Why Choose TRAVIZO</h2>
+    <div class="features-grid">
+      <div class="feature-card" animateOnScroll style="animation-delay:0.0s">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M3 17l5-9 4 6 3-4 6 7H3z"/>
+            <path d="M3 17h18" opacity="0.4"/>
+          </svg>
+        </div>
+        <h3>UNESCO Heritage</h3>
+        <p>Explore ancient landscapes recognised among the world's eight 'hottest biodiversity hotspots'.</p>
+      </div>
+      <div class="feature-card" animateOnScroll style="animation-delay:0.1s">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <path d="M12 2a10 10 0 1 0 10 10"/>
+            <path d="M12 6v6l4 2"/>
+            <circle cx="18" cy="5" r="3" fill="currentColor" opacity="0.3"/>
+            <path d="M17 2l2 3-2 1 1 3-3-1 1-2-3-1 3-3z"/>
+          </svg>
+        </div>
+        <h3>2,000+ Endemic Species</h3>
+        <p>Walk through forests teeming with rare flora and fauna found nowhere else on Earth.</p>
+      </div>
+      <div class="feature-card" animateOnScroll style="animation-delay:0.2s">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="2" y1="12" x2="22" y2="12" opacity="0.4"/>
+            <path d="M12 2a15 15 0 0 1 4 10 15 15 0 0 1-4 10 15 15 0 0 1-4-10 15 15 0 0 1 4-10z"/>
+            <path d="M8 6l2 2-2 2 2 2" opacity="0.6"/>
+          </svg>
+        </div>
+        <h3>Ancient Spice Routes</h3>
+        <p>Follow centuries-old trade paths through cardamom valleys and pepper vine forests.</p>
+      </div>
+      <div class="feature-card" animateOnScroll style="animation-delay:0.3s">
+        <div class="feature-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v3M12 20v3M1 12h3M20 12h3"/>
+            <path d="M4.22 4.22l2.12 2.12M17.66 17.66l2.12 2.12M4.22 19.78l2.12-2.12M17.66 6.34l2.12-2.12" opacity="0.5"/>
+          </svg>
+        </div>
+        <h3>Mist-Covered Peaks</h3>
+        <p>Wake to rolling clouds at 2,000m above sea level — a spectacle that never gets old.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION B.5: TRIP THERAPY ═══ -->
+<section class="trip-therapy" aria-labelledby="therapy-heading">
+  <div class="container">
+    <div class="therapy-header" animateOnScroll>
+      <p class="therapy-eyebrow">TRIP THERAPY</p>
+      <h2 id="therapy-heading" class="therapy-title">How Are You Feeling Today?</h2>
+      <p class="therapy-subtitle">Tell us your mood — we'll find your perfect Indian escape</p>
+    </div>
+
+    <div class="mood-grid" animateOnScroll>
+      <button
+        *ngFor="let mood of moods"
+        class="mood-btn"
+        [class.mood-active]="activeMood === mood.id"
+        (click)="selectMood(mood.id)"
+        [attr.aria-pressed]="activeMood === mood.id"
+        [style.--mood-color]="mood.color"
+      >
+        <span class="mood-icon">{{ mood.icon }}</span>
+        <span class="mood-label">{{ mood.label }}</span>
+        <span class="mood-desc">{{ mood.desc }}</span>
+      </button>
+    </div>
+
+    <div class="mood-results" *ngIf="activeMood && moodDestinations.length > 0" animateOnScroll>
+      <p class="mood-results-label">
+        {{ activeMoodObj?.icon }} Perfect picks for when you're feeling <strong>{{ activeMoodObj?.label | lowercase }}</strong>:
+      </p>
+      <div class="mood-dest-grid">
+        <a
+          *ngFor="let dest of moodDestinations; let i = index"
+          [routerLink]="['/destinations', dest.id]"
+          class="mood-dest-card"
+          [style.animation-delay]="(i * 0.08) + 's'"
+        >
+          <div class="mood-dest-img-wrap">
+            <img
+              [src]="getDestImage(dest.id)"
+              [alt]="dest.name"
+              loading="lazy"
+              decoding="async"
+              class="mood-dest-img"
+            />
+            <span class="mood-dest-type">{{ dest.type }}</span>
+          </div>
+          <div class="mood-dest-info">
+            <span class="mood-dest-name">{{ dest.name }}</span>
+            <span class="mood-dest-dur">{{ dest.duration }}</span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION C: FEATURED DESTINATIONS ═══ -->
+<section class="featured-destinations" aria-labelledby="featured-heading">
+  <div class="container">
+    <div class="section-header" animateOnScroll>
+      <h2 id="featured-heading" class="section-title">Curated Escapes</h2>
+      <div class="title-underline" aria-hidden="true"></div>
+      <p class="section-subtitle">Handpicked destinations where nature tells its most beautiful stories</p>
+    </div>
+
+    <div class="destinations-mosaic">
+      <article class="dest-card dest-card--large" animateOnScroll *ngFor="let dest of featuredDestinations; let i = index">
+        <div class="dest-card-image img-zoom-container">
+          <img
+            [src]="getDestImage(dest.id)"
+            [alt]="dest.name + ' — ' + dest.type + ' in India'"
+            [loading]="i === 0 ? 'eager' : 'lazy'"
+            decoding="async"
+            class="dest-img"
+          />
+          <span class="dest-type-badge">{{ dest.type }}</span>
+        </div>
+        <div class="dest-card-body">
+          <h3 class="dest-name">{{ dest.name }}</h3>
+          <p class="dest-location">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+            {{ dest.duration }} · India
+          </p>
+          <p class="dest-summary">{{ dest.summary }}</p>
+          <a [routerLink]="['/destinations', dest.id]" class="dest-explore-link" [attr.aria-label]="'Explore ' + dest.name">
+            Explore
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <div class="view-all-wrap" animateOnScroll>
+      <a routerLink="/destinations" class="btn-view-all">
+        View All Destinations
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SECTION D: QUOTE BANNER ═══ -->
+<section class="quote-banner grain-overlay" aria-label="Inspirational quote">
+  <div class="quote-bg"></div>
+  <div class="quote-overlay"></div>
+  <div class="quote-content" animateOnScroll>
+    <svg class="quote-mark" width="60" height="48" viewBox="0 0 60 48" fill="none" aria-hidden="true">
+      <path d="M0 48V29.3C0 12.7 10.4 3.7 31.2 0l3.6 6.4C24 8.4 18.4 13.6 17.6 22H27V48H0zm33 0V29.3C33 12.7 43.4 3.7 64.2 0l3.6 6.4C57 8.4 51.4 13.6 50.6 22H60V48H33z" fill="currentColor" opacity="0.4"/>
+    </svg>
+    <blockquote class="quote-text">
+      In every walk with nature, one receives far more than he seeks.
+    </blockquote>
+    <cite class="quote-author">— John Muir</cite>
+  </div>
+</section>
+
+<!-- ═══ SECTION E: CTA SECTION ═══ -->
+<section class="cta-section" aria-labelledby="cta-heading">
+  <!-- Decorative leaf SVGs -->
+  <div class="deco-leaf deco-leaf--1" aria-hidden="true">
+    <svg width="120" height="120" viewBox="0 0 100 100" fill="none">
+      <path d="M50 10 C20 10 5 40 10 70 C15 100 45 90 60 70 C75 50 80 20 50 10Z" fill="white" opacity="0.04"/>
+    </svg>
+  </div>
+  <div class="deco-leaf deco-leaf--2" aria-hidden="true">
+    <svg width="80" height="80" viewBox="0 0 100 100" fill="none">
+      <path d="M50 10 C20 10 5 40 10 70 C15 100 45 90 60 70 C75 50 80 20 50 10Z" fill="white" opacity="0.04"/>
+    </svg>
+  </div>
+
+  <div class="container cta-inner">
+    <div class="cta-text" animateOnScroll>
+      <h2 id="cta-heading" class="cta-heading">Your Next Adventure<br>Starts Here</h2>
+      <p class="cta-body">
+        Let us craft a journey as unique as you are. From misty hilltop retreats to sun-soaked coastal escapes — our team of seasoned travel experts will design your perfect South India itinerary.
+      </p>
+      <a routerLink="/booking" class="cta-btn">
+        Book Your Trip
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+    </div>
+    <div class="cta-image-wrap" animateOnScroll>
+      <img
+        src="https://images.unsplash.com/photo-1593693397690-362cb9666fc2?w=600&q=80"
+        alt="Lush tea plantation terraces in Munnar, Kerala"
+        loading="lazy"
+        decoding="async"
+        class="cta-image"
+      />
+    </div>
+  </div>
+</section>

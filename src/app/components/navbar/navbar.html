@@ -1,0 +1,81 @@
+<header class="navbar" [class.scrolled]="isScrolled" role="banner">
+  <div class="navbar-inner container">
+
+    <!-- Logo -->
+    <a routerLink="/" class="navbar-logo" aria-label="TRAVIZO — Home" (click)="closeMobileMenu()">
+      <div class="logo-frame">
+        <img src="assets/Travizo.jpeg" alt="TRAVIZO logo" class="logo-img" />
+      </div>
+      <span>TRAVIZO</span>
+    </a>
+
+    <!-- Desktop Navigation -->
+    <nav class="navbar-nav" role="navigation" aria-label="Main navigation">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="nav-link" (click)="closeMobileMenu()">Home</a>
+      <a routerLink="/destinations" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Destinations</a>
+      <a routerLink="/booking" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Book a Tour</a>
+      <a routerLink="/about" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">About</a>
+      <a routerLink="/contact" routerLinkActive="active" class="nav-link" (click)="closeMobileMenu()">Contact</a>
+      <a *ngIf="currentUser" routerLink="/booking-history" routerLinkActive="active" class="nav-link nav-link-admin" (click)="closeMobileMenu()">Booking History</a>
+    </nav>
+
+    <!-- Auth Actions -->
+    <div class="navbar-actions">
+      <!-- Notification Bell (always visible) -->
+      <app-toast></app-toast>
+
+      <ng-container *ngIf="currentUser; else loginBtn">
+        <span class="user-greeting" [title]="currentUser.name">Hi, {{ displayName }}</span>
+        <button class="btn-logout" (click)="logout()">Logout</button>
+      </ng-container>
+      <ng-template #loginBtn>
+        <button class="btn-login" (click)="openLoginModal()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Login
+        </button>
+      </ng-template>
+    </div>
+
+    <!-- Mobile Hamburger -->
+    <button class="hamburger" (click)="toggleMobileMenu()" [attr.aria-expanded]="isMobileMenuOpen" aria-label="Toggle navigation menu">
+      <span class="bar" [class.open]="isMobileMenuOpen"></span>
+      <span class="bar" [class.open]="isMobileMenuOpen"></span>
+      <span class="bar" [class.open]="isMobileMenuOpen"></span>
+    </button>
+  </div>
+
+  <!-- Golden accent line -->
+  <div class="navbar-accent-line"></div>
+</header>
+
+<!-- Mobile Overlay Menu -->
+<div class="mobile-menu" [class.open]="isMobileMenuOpen" role="dialog" aria-label="Mobile navigation">
+  <div class="mobile-menu-bg"></div>
+  <nav class="mobile-nav" role="navigation" aria-label="Mobile main navigation">
+    <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact:true}" class="mobile-nav-link" (click)="closeMobileMenu()">Home</a>
+    <a routerLink="/destinations" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">Destinations</a>
+    <a routerLink="/booking" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">Book a Tour</a>
+    <a routerLink="/about" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">About</a>
+    <a routerLink="/contact" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">Contact</a>
+    <a *ngIf="currentUser" routerLink="/booking-history" routerLinkActive="active" class="mobile-nav-link" (click)="closeMobileMenu()">Booking History</a>
+    <div class="mobile-auth">
+      <ng-container *ngIf="currentUser; else mobileLoginBtn">
+        <span class="mobile-user">Hi, {{ currentUser.name }}</span>
+        <button class="mobile-btn-logout" (click)="logout()">Logout</button>
+      </ng-container>
+      <ng-template #mobileLoginBtn>
+        <button class="mobile-btn-login" (click)="openLoginModal()">Login / Sign Up</button>
+      </ng-template>
+    </div>
+  </nav>
+</div>
+
+<!-- Login Modal -->
+<app-login-modal
+  *ngIf="showLoginModal"
+  (close)="closeLoginModal()"
+  (loginSuccess)="onLoginSuccess()">
+</app-login-modal>

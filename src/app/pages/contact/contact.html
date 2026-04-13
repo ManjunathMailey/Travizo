@@ -1,0 +1,199 @@
+<!-- ─── Hero ─── -->
+<section class="contact-hero grain-overlay" aria-label="Contact page hero">
+  <div class="contact-hero-bg"></div>
+  <div class="contact-hero-overlay"></div>
+  <div class="contact-hero-content">
+    <p class="contact-hero-eyebrow">WE'D LOVE TO HEAR FROM YOU</p>
+    <h1 class="contact-hero-title">Get in Touch</h1>
+    <p class="contact-hero-sub">Have questions? Our travel experts are here to help.</p>
+  </div>
+</section>
+
+<!-- ─── Contact Main ─── -->
+<section class="contact-main" aria-labelledby="contact-form-heading">
+  <div class="container contact-grid">
+
+    <!-- Left: Form -->
+    <div class="contact-form-col">
+      <!-- Success State -->
+      <div class="form-success" *ngIf="submitted" animateOnScroll>
+        <div class="success-icon" aria-hidden="true">
+          <svg width="48" height="48" viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="none" stroke="var(--color-primary)" stroke-width="2"/>
+            <path class="checkmark-path" fill="none" stroke="var(--color-primary)" stroke-width="3" d="M14 27l8 8 16-16"/>
+          </svg>
+        </div>
+        <h3>Message Sent!</h3>
+        <p>Thank you for reaching out. We'll get back to you within 24 hours.</p>
+        <button class="btn-send-another" (click)="resetForm()">Send Another Message</button>
+      </div>
+
+      <!-- Trip Therapy Banner in Contact -->
+      <div class="contact-therapy-banner" *ngIf="!submitted">
+        <p class="ctb-text">✨ <strong>Trip Therapy:</strong> Tell us how you're feeling in your message — our team will match you with the perfect destination</p>
+        <div class="ctb-moods">
+          <span>🌊 Serene Escape</span>
+          <span>⛰️ Adrenaline Rush</span>
+          <span>💕 Hearts Entwined</span>
+          <span>🕌 Soul Seeking</span>
+          <span>🏖️ Tropical Paradise</span>
+          <span>🏙️ Urban Canvas</span>
+        </div>
+      </div>
+
+      <!-- Form -->
+      <div class="form-card" *ngIf="!submitted" animateOnScroll>
+        <h2 id="contact-form-heading" class="form-card-title">Send Us a Message</h2>
+
+        <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name" class="form-label">Your Name <span class="required" aria-hidden="true">*</span></label>
+              <input id="name" type="text" formControlName="name" class="form-input" placeholder="Ravi Kumar" [class.error]="isFieldInvalid('name')" autocomplete="name" />
+              <p class="field-error" *ngIf="isFieldInvalid('name')" role="alert">Please enter your name (min. 2 characters).</p>
+            </div>
+            <div class="form-group">
+              <label for="email" class="form-label">Email Address <span class="required" aria-hidden="true">*</span></label>
+              <input id="email" type="email" formControlName="email" class="form-input" placeholder="you@example.com" [class.error]="isFieldInvalid('email')" autocomplete="email" />
+              <p class="field-error" *ngIf="isFieldInvalid('email')" role="alert">Please enter a valid email address.</p>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phone" class="form-label">Phone <span class="optional">(optional)</span></label>
+              <input id="phone" type="tel" formControlName="phone" class="form-input" placeholder="+91 98765 43210" autocomplete="tel" />
+            </div>
+            <div class="form-group">
+              <label for="subject" class="form-label">Subject <span class="required" aria-hidden="true">*</span></label>
+              <div class="select-wrap">
+                <select id="subject" formControlName="subject" class="form-select" [class.error]="isFieldInvalid('subject')">
+                  <option value="">Select a subject…</option>
+                  <option *ngFor="let sub of subjects" [value]="sub">{{ sub }}</option>
+                </select>
+                <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+              </div>
+              <p class="field-error" *ngIf="isFieldInvalid('subject')" role="alert">Please select a subject.</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="message" class="form-label">Message <span class="required" aria-hidden="true">*</span></label>
+            <textarea id="message" formControlName="message" class="form-textarea" rows="5" placeholder="Tell us about your trip plans, questions, or feedback…" [class.error]="isFieldInvalid('message')"></textarea>
+            <p class="field-error" *ngIf="isFieldInvalid('message')" role="alert">Please enter a message (min. 20 characters).</p>
+          </div>
+
+          <button type="submit" class="btn-send">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+            Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Right: Info -->
+    <aside class="contact-info-col" aria-label="Contact information" animateOnScroll>
+      <!-- Contact Details -->
+      <div class="info-card">
+        <h3 class="info-card-title">Contact Information</h3>
+        <ul class="info-list">
+          <li class="info-item">
+            <div class="info-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <div>
+              <span class="info-label">Email</span>
+              <a href="mailto:hello@travizo.in" class="info-value">hello&#64;travizo.in</a>
+            </div>
+          </li>
+          <li class="info-item">
+            <div class="info-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.68 13.6a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.59 3h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 10.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 17z"/></svg>
+            </div>
+            <div>
+              <span class="info-label">Phone</span>
+              <a href="tel:+919876543210" class="info-value">+91 98765 43210</a>
+            </div>
+          </li>
+          <li class="info-item">
+            <div class="info-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            </div>
+            <div>
+              <span class="info-label">Office</span>
+              <span class="info-value">Indiranagar, Bengaluru<br>Karnataka 560 038, India</span>
+            </div>
+          </li>
+          <li class="info-item">
+            <div class="info-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+            <div>
+              <span class="info-label">Hours</span>
+              <span class="info-value">Mon – Sat: 9 AM – 7 PM IST<br>Sunday: Closed</span>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Social Links -->
+        <div class="info-social">
+          <a href="#" class="social-pill" aria-label="Instagram">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </a>
+          <a href="#" class="social-pill" aria-label="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            Facebook
+          </a>
+        </div>
+      </div>
+
+      <!-- Mini Map -->
+      <div class="mini-map-wrap">
+        <iframe
+          width="100%"
+          height="250"
+          [src]="mapUrl"
+          loading="lazy"
+          title="TRAVIZO office location in Bengaluru"
+          frameborder="0"
+          style="border:0"
+        ></iframe>
+      </div>
+    </aside>
+  </div>
+</section>
+
+<!-- ─── FAQ Section ─── -->
+<section class="faq-section" aria-labelledby="faq-heading">
+  <div class="container">
+    <div class="section-header" animateOnScroll>
+      <h2 id="faq-heading" class="section-title">Frequently Asked Questions</h2>
+      <div class="title-underline" aria-hidden="true"></div>
+      <p class="section-subtitle">Everything you need to know before your trip</p>
+    </div>
+
+    <div class="faq-list" animateOnScroll>
+      <div
+        *ngFor="let faq of faqs"
+        class="faq-item"
+        [class.open]="faq.open"
+      >
+        <button
+          class="faq-trigger"
+          (click)="toggleFaq(faq)"
+          [attr.aria-expanded]="faq.open"
+          type="button"
+        >
+          <span>{{ faq.question }}</span>
+          <svg class="faq-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+            <polyline points="6 9 12 15 18 9"/>
+          </svg>
+        </button>
+        <div class="faq-answer" *ngIf="faq.open">
+          <p>{{ faq.answer }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

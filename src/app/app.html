@@ -1,0 +1,19 @@
+<app-navbar></app-navbar>
+<main id="main-content">
+  <router-outlet></router-outlet>
+</main>
+<app-footer></app-footer>
+
+<!-- Popup toast — rendered at root to avoid navbar backdrop-filter stacking context -->
+<div class="app-toast" [class.app-toast-visible]="showToast" (click)="dismissToast()" role="alert" aria-live="polite">
+  <ng-container *ngIf="latestToast">
+    <span class="app-toast-icon"
+      [class.toast-success]="latestToast.type === 'success'"
+      [class.toast-error]="latestToast.type === 'error'"
+      [class.toast-warning]="latestToast.type === 'warning'"
+      [class.toast-info]="latestToast.type === 'info'"
+      aria-hidden="true">{{ latestToast.icon }}</span>
+    <span class="app-toast-msg">{{ latestToast.message }}</span>
+    <button class="app-toast-close" aria-label="Dismiss">×</button>
+  </ng-container>
+</div>

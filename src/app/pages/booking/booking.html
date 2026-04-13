@@ -1,0 +1,621 @@
+<!-- ─── Hero ─── -->
+<section class="booking-hero grain-overlay" aria-label="Booking page hero">
+  <div class="booking-hero-bg"></div>
+  <div class="booking-hero-overlay"></div>
+  <div class="booking-hero-content">
+    <p class="booking-hero-eyebrow">PLAN YOUR ESCAPE</p>
+    <h1 class="booking-hero-title">Book Your Adventure</h1>
+    <p class="booking-hero-sub">Curated trips across India — from the Himalayas to the backwaters</p>
+  </div>
+</section>
+
+<!-- ─── Trip Therapy Mood Bar (only when no destination pre-selected) ─── -->
+<div class="booking-mood-bar" *ngIf="showMoodBar">
+  <p class="booking-mood-label">✨ <strong>Trip Therapy</strong> — How are you feeling today?</p>
+  <div class="booking-mood-chips">
+    <button
+      *ngFor="let m of moods"
+      type="button"
+      class="booking-mood-chip"
+      [class.booking-mood-chip-active]="activeMood === m.id"
+      (click)="selectMood(m.id)"
+    >{{ m.icon }} {{ m.label }}</button>
+    <button
+      *ngIf="activeMood"
+      type="button"
+      class="booking-mood-chip booking-mood-chip-clear"
+      (click)="selectMood(activeMood)"
+    >✕ Clear</button>
+  </div>
+  <p class="booking-mood-hint" *ngIf="activeMood">
+    Showing destinations that match your mood — pick one below!
+  </p>
+</div>
+
+<!-- ─── Auth Wall (shown when NOT logged in) ─── -->
+<section class="auth-wall" *ngIf="!isLoggedIn && !submitted" aria-label="Sign in required to book">
+  <div class="container">
+    <div class="auth-wall-card">
+      <div class="auth-wall-visual">
+        <img
+          src="https://images.unsplash.com/photo-1602216056096-3b40cc0c9944?w=700&q=80"
+          alt="Kerala houseboat on the backwaters"
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="auth-wall-visual-overlay">
+          <span class="auth-wall-visual-quote">"The world is a book, and those who do not travel read only one page."</span>
+        </div>
+      </div>
+      <div class="auth-wall-content">
+        <div class="auth-lock-icon" aria-hidden="true">🔐</div>
+        <h2 class="auth-wall-title">Sign In to Book Your Journey</h2>
+        <p class="auth-wall-desc">
+          Join thousands of travellers who have explored the magic of South India with us.
+          Create a free account in seconds to start booking your dream trip.
+        </p>
+        <button class="btn-auth-signin" (click)="showLoginModal = true" aria-haspopup="dialog">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+            <polyline points="10 17 15 12 10 7"/>
+            <line x1="15" y1="12" x2="3" y2="12"/>
+          </svg>
+          Login / Sign Up — It's Free
+        </button>
+        <a routerLink="/destinations" class="btn-auth-browse">Browse Destinations First</a>
+        <ul class="auth-wall-features" aria-label="Benefits of signing in">
+          <li class="auth-feature"><span class="auth-feature-check" aria-hidden="true">✓</span> Personalised itineraries for your group</li>
+          <li class="auth-feature"><span class="auth-feature-check" aria-hidden="true">✓</span> Instant booking confirmation</li>
+          <li class="auth-feature"><span class="auth-feature-check" aria-hidden="true">✓</span> 24/7 dedicated trip support</li>
+          <li class="auth-feature"><span class="auth-feature-check" aria-hidden="true">✓</span> Exclusive group discounts</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Login Modal (booking page trigger) ─── -->
+<app-login-modal
+  *ngIf="showLoginModal"
+  (close)="showLoginModal = false"
+  (loginSuccess)="onLoginSuccess()"
+  aria-modal="true"
+></app-login-modal>
+
+<!-- ─── Razorpay Payment Modal ─── -->
+<div class="rzp-overlay" *ngIf="showPaymentModal" (click)="closePaymentModal()" role="dialog" aria-modal="true" aria-label="Payment">
+  <div class="rzp-modal" (click)="$event.stopPropagation()">
+
+    <!-- Header -->
+    <div class="rzp-header">
+      <div class="rzp-brand">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+        <span>Secure Payment</span>
+      </div>
+      <div class="rzp-amount-header">{{ estimatedPrice() }}</div>
+      <button class="rzp-close" (click)="closePaymentModal()" [disabled]="paymentProcessing" aria-label="Close payment">×</button>
+    </div>
+
+    <!-- Destination summary -->
+    <div class="rzp-summary">
+      <span class="rzp-dest">{{ step1Form.get('destination')!.value }}</span>
+      <span class="rzp-pkg">{{ getSelectedTripType()?.emoji }} {{ getSelectedTripType()?.label }} · {{ step1Form.get('travelers')!.value }} Traveler{{ step1Form.get('travelers')!.value !== 1 ? 's' : '' }}</span>
+    </div>
+
+    <!-- Payment Method Tabs -->
+    <div class="rzp-methods" role="tablist" aria-label="Select payment method">
+      <button class="rzp-method-tab" [class.active]="paymentMethod === 'upi'" (click)="paymentMethod = 'upi'" role="tab">
+        <span aria-hidden="true">📱</span> UPI
+      </button>
+      <button class="rzp-method-tab" [class.active]="paymentMethod === 'card'" (click)="paymentMethod = 'card'" role="tab">
+        <span aria-hidden="true">💳</span> Card
+      </button>
+      <button class="rzp-method-tab" [class.active]="paymentMethod === 'netbanking'" (click)="paymentMethod = 'netbanking'" role="tab">
+        <span aria-hidden="true">🏦</span> Net Banking
+      </button>
+      <button class="rzp-method-tab" [class.active]="paymentMethod === 'wallet'" (click)="paymentMethod = 'wallet'" role="tab">
+        <span aria-hidden="true">👝</span> Wallet
+      </button>
+    </div>
+
+    <div class="rzp-body">
+
+      <!-- UPI -->
+      <div *ngIf="paymentMethod === 'upi'" class="rzp-form">
+        <p class="rzp-upi-label">Select your UPI app:</p>
+        <div class="rzp-upi-logos">
+          <button
+            *ngFor="let app of upiApps"
+            type="button"
+            class="rzp-upi-badge"
+            [class.active]="selectedUpiApp === app.name"
+            (click)="selectUpiApp(app.name, app.handle)"
+            [disabled]="paymentProcessing"
+          >{{ app.label }}</button>
+        </div>
+        <div class="rzp-field">
+          <label>Your UPI ID</label>
+          <input
+            type="text"
+            [(ngModel)]="upiId"
+            name="upiId"
+            [placeholder]="selectedUpiHandle ? 'e.g. 9876543210@' + selectedUpiHandle : 'Enter your UPI ID'"
+            class="rzp-input"
+            [disabled]="paymentProcessing"
+          />
+        </div>
+      </div>
+
+      <!-- Card -->
+      <div *ngIf="paymentMethod === 'card'" class="rzp-form">
+        <div class="rzp-field">
+          <label>Card Number</label>
+          <input type="text" [value]="cardNumber" (input)="formatCardNumber($event)" name="cardNumber" placeholder="0000 0000 0000 0000" class="rzp-input" maxlength="19" [disabled]="paymentProcessing" />
+        </div>
+        <div class="rzp-field">
+          <label>Cardholder Name</label>
+          <input type="text" [(ngModel)]="cardName" name="cardName" placeholder="Name on card" class="rzp-input" [disabled]="paymentProcessing" />
+        </div>
+        <div class="rzp-row">
+          <div class="rzp-field">
+            <label>Expiry</label>
+            <input type="text" [value]="cardExpiry" (input)="formatExpiry($event)" name="cardExpiry" placeholder="MM/YY" class="rzp-input" maxlength="5" [disabled]="paymentProcessing" />
+          </div>
+          <div class="rzp-field">
+            <label>CVV</label>
+            <input type="password" [(ngModel)]="cardCvv" name="cardCvv" placeholder="•••" class="rzp-input" maxlength="4" [disabled]="paymentProcessing" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Netbanking -->
+      <div *ngIf="paymentMethod === 'netbanking'" class="rzp-form">
+        <div class="rzp-bank-grid">
+          <div class="rzp-bank-item">🏛️ SBI</div>
+          <div class="rzp-bank-item">🏦 HDFC</div>
+          <div class="rzp-bank-item">🏦 ICICI</div>
+          <div class="rzp-bank-item">🏦 Axis</div>
+          <div class="rzp-bank-item">🏦 Kotak</div>
+          <div class="rzp-bank-item">🏦 PNB</div>
+        </div>
+        <p class="rzp-hint">Select your bank to proceed. You will be redirected to your bank's page.</p>
+      </div>
+
+      <!-- Wallet -->
+      <div *ngIf="paymentMethod === 'wallet'" class="rzp-form">
+        <div class="rzp-bank-grid">
+          <div class="rzp-bank-item">📱 Paytm</div>
+          <div class="rzp-bank-item">📱 Amazon Pay</div>
+          <div class="rzp-bank-item">📱 Freecharge</div>
+          <div class="rzp-bank-item">📱 MobiKwik</div>
+        </div>
+        <p class="rzp-hint">Select your wallet to proceed with the payment.</p>
+      </div>
+
+      <!-- Error message -->
+      <p class="rzp-error" *ngIf="paymentError" role="alert">⚠️ {{ paymentError }}</p>
+
+      <!-- Pay Button -->
+      <button class="rzp-pay-btn" (click)="processPayment()" [disabled]="paymentProcessing">
+        <span *ngIf="!paymentProcessing">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          Pay {{ estimatedPrice() }}
+        </span>
+        <span *ngIf="paymentProcessing" class="rzp-processing">
+          <span class="rzp-spinner"></span>
+          Processing payment…
+        </span>
+      </button>
+
+      <div class="rzp-secure-note">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        256-bit SSL secured · Powered by Razorpay
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── Success Screen ─── -->
+<div class="success-screen" *ngIf="submitted" animateOnScroll>
+  <div class="success-card">
+    <div class="success-icon-wrap" aria-hidden="true">
+      <svg class="success-check" width="60" height="60" viewBox="0 0 52 52">
+        <circle cx="26" cy="26" r="25" fill="none" stroke="var(--color-primary)" stroke-width="2"/>
+        <path class="checkmark-path" fill="none" stroke="var(--color-primary)" stroke-width="3" d="M14 27l8 8 16-16"/>
+      </svg>
+    </div>
+    <h2>Booking Confirmed!</h2>
+    <p class="booking-ref">Reference: <strong>{{ bookingRef }}</strong></p>
+    <p class="success-msg">
+      Thank you for choosing TRAVIZO! Our travel experts will reach out to you within 24 hours to finalise your itinerary.
+    </p>
+
+    <!-- Booking Summary -->
+    <div class="success-booking-summary">
+      <h3>Booking Details</h3>
+      <div class="summary-row">
+        <span>Destination</span>
+        <strong>{{ step1Form.get('destination')!.value }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Check-in</span>
+        <strong>{{ step1Form.get('checkIn')!.value | date:'mediumDate' }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Check-out</span>
+        <strong>{{ step1Form.get('checkOut')!.value | date:'mediumDate' }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Travelers</span>
+        <strong>{{ step1Form.get('travelers')!.value }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Package</span>
+        <strong>{{ getSelectedTripType()?.emoji }} {{ getSelectedTripType()?.label }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Traveler Name</span>
+        <strong>{{ step2Form.get('fullName')!.value }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Email</span>
+        <strong>{{ step2Form.get('email')!.value }}</strong>
+      </div>
+      <div class="summary-row">
+        <span>Phone</span>
+        <strong>{{ step2Form.get('phone')!.value }}</strong>
+      </div>
+      <div class="summary-row" *ngIf="groupDiscount > 0">
+        <span>Group Discount</span>
+        <strong class="discount-tag">-{{ groupDiscount }}% applied</strong>
+      </div>
+      <div class="summary-row">
+        <span>Estimated Total</span>
+        <strong style="color: var(--color-primary); font-size: 1.25rem;">{{ estimatedPrice() }}</strong>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="success-actions">
+      <button class="btn-download-pdf" (click)="downloadPDF()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download as PDF
+      </button>
+    </div>
+
+    <a routerLink="/" class="success-home-btn">Back to Home</a>
+  </div>
+</div>
+
+<!-- ─── Booking Form (only when logged in) ─── -->
+<div class="booking-wrapper" *ngIf="isLoggedIn && !submitted">
+  <div class="container">
+    <!-- Progress Indicator -->
+    <div class="progress-bar" role="list" aria-label="Booking progress">
+      <div
+        *ngFor="let step of [1, 2, 3]"
+        class="progress-step"
+        [class.active]="currentStep === step"
+        [class.completed]="currentStep > step"
+        role="listitem"
+        [attr.aria-current]="currentStep === step ? 'step' : null"
+      >
+        <button
+          class="step-circle"
+          (click)="goToStep(step)"
+          [disabled]="step > currentStep"
+          [attr.aria-label]="'Step ' + step + (currentStep > step ? ' (completed)' : '')"
+        >
+          <svg *ngIf="currentStep > step" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"/>
+          </svg>
+          <span *ngIf="currentStep <= step">{{ step }}</span>
+        </button>
+        <span class="step-label">
+          {{ step === 1 ? 'Trip Details' : step === 2 ? 'Your Info' : 'Review' }}
+        </span>
+        <div class="step-connector" *ngIf="step < 3" aria-hidden="true"></div>
+      </div>
+    </div>
+
+    <!-- STEP 1: Trip Selection -->
+    <div class="booking-split-layout" *ngIf="currentStep === 1">
+      <div class="step-card" aria-label="Step 1: Trip Details">
+        <h2 class="step-title">Select Your Trip</h2>
+        <p class="step-desc">Choose your destination, travel dates, and preferred package.</p>
+
+        <form [formGroup]="step1Form">
+          <!-- Destination -->
+          <div class="form-group">
+            <label for="destination" class="form-label">Destination <span class="required" aria-hidden="true">*</span></label>
+            <div class="select-wrap">
+              <select id="destination" formControlName="destination" class="form-select" [class.error]="isFieldInvalid(step1Form, 'destination')">
+                <option value="">Select a destination…</option>
+                <option *ngFor="let dest of destinations" [value]="dest">{{ dest }}</option>
+              </select>
+              <svg class="select-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <p class="field-error" *ngIf="isFieldInvalid(step1Form, 'destination')" role="alert">Please select a destination.</p>
+          </div>
+
+          <!-- Dates -->
+          <div class="form-row">
+            <div class="form-group">
+              <label for="checkIn" class="form-label">Check-in Date <span class="required" aria-hidden="true">*</span></label>
+              <input id="checkIn" type="date" formControlName="checkIn" class="form-input" [min]="today" [class.error]="isFieldInvalid(step1Form, 'checkIn')" />
+              <p class="field-error" *ngIf="isFieldInvalid(step1Form, 'checkIn')" role="alert">Please select a check-in date.</p>
+            </div>
+            <div class="form-group">
+              <label for="checkOut" class="form-label">Check-out Date <span class="required" aria-hidden="true">*</span></label>
+              <input id="checkOut" type="date" formControlName="checkOut" class="form-input" [min]="today" [class.error]="isFieldInvalid(step1Form, 'checkOut')" [readonly]="!!currentDestination" />
+              <p class="field-hint" *ngIf="currentDestination" style="color: var(--color-primary-light); font-size: 0.85rem; margin-top: 4px;">
+                ⏱️ Auto-set to {{ getTripDays() }} days based on {{ currentDestination.name }}'s trip duration
+              </p>
+              <p class="field-error" *ngIf="isFieldInvalid(step1Form, 'checkOut')" role="alert">Please select a check-out date.</p>
+            </div>
+          </div>
+
+          <!-- Travelers -->
+          <div class="form-group">
+            <label class="form-label" for="travelers-display">Number of Travelers <span class="required" aria-hidden="true">*</span></label>
+            <div class="counter-wrap" id="travelers-display">
+              <button type="button" class="counter-btn" (click)="decrementTravelers()" aria-label="Decrease travelers" [disabled]="step1Form.get('travelers')!.value <= 1">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+              <span class="counter-value" aria-live="polite">{{ step1Form.get('travelers')!.value }} Traveler{{ step1Form.get('travelers')!.value !== 1 ? 's' : '' }}</span>
+              <button type="button" class="counter-btn" (click)="incrementTravelers()" aria-label="Increase travelers" [disabled]="step1Form.get('travelers')!.value >= 20">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Trip Package -->
+          <div class="form-group">
+            <label class="form-label">
+              Trip Package
+              <span class="required" aria-hidden="true">*</span>
+            </label>
+
+            <!-- Group Discount Banner -->
+            <div class="group-discount-badge" *ngIf="groupDiscount > 0" aria-live="polite" role="status">
+              🎉 Group discount: <strong>{{ groupDiscount }}% off</strong> applied for {{ step1Form.get('travelers')!.value }} travellers!
+            </div>
+
+            <div class="trip-type-cards" role="radiogroup" aria-label="Select trip package">
+              <label
+                *ngFor="let pkg of tripPackages"
+                class="trip-type-card"
+                [class.selected]="step1Form.get('tripType')!.value === pkg.value"
+              >
+                <input type="radio" formControlName="tripType" [value]="pkg.value" class="sr-only" />
+                <div class="trip-type-top">
+                  <div class="trip-type-name-wrap">
+                    <span class="trip-type-emoji" aria-hidden="true">{{ pkg.emoji }}</span>
+                    <span class="trip-type-name">{{ pkg.label }}</span>
+                  </div>
+                  <span class="trip-type-price">{{ formatPrice(pkg.basePrice) }}<span class="per">/person</span></span>
+                </div>
+                <p class="trip-type-desc">{{ pkg.desc }}</p>
+                <ul class="trip-inclusions" aria-label="Package inclusions">
+                  <li *ngFor="let inc of pkg.inclusions">{{ inc }}</li>
+                </ul>
+                <div class="trip-type-check" aria-hidden="true">
+                  <svg *ngIf="step1Form.get('tripType')!.value === pkg.value" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                    <polyline points="20 6 9 17 4 12"/>
+                  </svg>
+                </div>
+              </label>
+            </div>
+          </div>
+        </form>
+
+        <div class="step-actions">
+          <button class="btn-next" (click)="nextStep()">
+            Next Step
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Destination Sidebar -->
+      <aside class="dest-sidebar" aria-label="Destination details">
+        <ng-container *ngIf="currentDestination; else sidebarPlaceholder">
+          <img
+            class="dest-sidebar-img"
+            [src]="getDestImage(currentDestination.id)"
+            [alt]="currentDestination.name"
+            loading="lazy"
+            decoding="async"
+          />
+          <div class="dest-sidebar-body">
+            <h3 class="dest-sidebar-name">{{ currentDestination.name }}</h3>
+            <span class="dest-sidebar-badge">{{ currentDestination.type }}</span>
+            <p class="dest-sidebar-significance" *ngIf="currentDestination.culturalInfo">
+              {{ currentDestination.culturalInfo.significance }}
+            </p>
+            <ul class="dest-sidebar-highlights" *ngIf="currentDestination.culturalInfo?.highlights?.length">
+              <li *ngFor="let h of currentDestination.culturalInfo!.highlights">{{ h }}</li>
+            </ul>
+            <div class="dest-sidebar-meta">
+              <span class="dest-sidebar-meta-item" *ngIf="currentDestination.culturalInfo?.bestSeason">
+                🗓️ Best season: <strong>{{ currentDestination.culturalInfo!.bestSeason }}</strong>
+              </span>
+              <span class="dest-sidebar-meta-item" *ngIf="currentDestination.culturalInfo?.festivals">
+                🎉 {{ currentDestination.culturalInfo!.festivals }}
+              </span>
+              <span class="dest-sidebar-meta-item" *ngIf="currentDestination.duration">
+                ⏱️ Duration: <strong>{{ currentDestination.duration }}</strong>
+              </span>
+            </div>
+          </div>
+        </ng-container>
+        <ng-template #sidebarPlaceholder>
+          <div class="dest-sidebar-placeholder">
+            <span class="dest-sidebar-placeholder-icon" aria-hidden="true">🌍</span>
+            <h4>Select a Destination</h4>
+            <p>Choose a destination from the list to see its details, cultural significance, and highlights here.</p>
+          </div>
+        </ng-template>
+      </aside>
+    </div>
+
+    <!-- STEP 2: Traveler Details -->
+    <div class="step-card" *ngIf="currentStep === 2" aria-label="Step 2: Your Information">
+      <h2 class="step-title">Your Details</h2>
+      <p class="step-desc">Tell us about yourself so we can personalise your experience.</p>
+
+      <form [formGroup]="step2Form">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fullName" class="form-label">Full Name <span class="required" aria-hidden="true">*</span></label>
+            <input id="fullName" type="text" formControlName="fullName" class="form-input" placeholder="e.g. Ravi Kumar" [class.error]="isFieldInvalid(step2Form, 'fullName')" autocomplete="name" />
+            <p class="field-error" *ngIf="isFieldInvalid(step2Form, 'fullName')" role="alert">Please enter your full name (min. 2 characters).</p>
+          </div>
+          <div class="form-group">
+            <label for="email" class="form-label">Email Address <span class="required" aria-hidden="true">*</span></label>
+            <input id="email" type="email" formControlName="email" class="form-input" placeholder="you@example.com" [class.error]="isFieldInvalid(step2Form, 'email')" autocomplete="email" />
+            <p class="field-error" *ngIf="isFieldInvalid(step2Form, 'email')" role="alert">Please enter a valid email address.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="phone" class="form-label">Phone Number <span class="required" aria-hidden="true">*</span></label>
+          <input id="phone" type="tel" formControlName="phone" class="form-input" placeholder="10-digit mobile number" [class.error]="isFieldInvalid(step2Form, 'phone')" autocomplete="tel" />
+          <p class="field-error" *ngIf="isFieldInvalid(step2Form, 'phone')" role="alert">Please enter a valid 10-digit phone number.</p>
+        </div>
+
+        <div class="form-group">
+          <label for="specialRequests" class="form-label">Special Requests <span class="optional">(optional)</span></label>
+          <textarea id="specialRequests" formControlName="specialRequests" class="form-textarea" rows="4" placeholder="Accessibility needs, celebration occasions, custom activity preferences…"></textarea>
+        </div>
+
+        <div class="form-group" formGroupName="dietary">
+          <label class="form-label">Dietary Preferences <span class="optional">(optional)</span></label>
+          <div class="checkbox-group">
+            <label class="checkbox-item">
+              <input type="checkbox" formControlName="vegetarian" />
+              <span class="checkbox-custom" aria-hidden="true"></span>
+              Vegetarian
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" formControlName="nonVeg" />
+              <span class="checkbox-custom" aria-hidden="true"></span>
+              Non-Vegetarian
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" formControlName="vegan" />
+              <span class="checkbox-custom" aria-hidden="true"></span>
+              Vegan
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" formControlName="glutenFree" />
+              <span class="checkbox-custom" aria-hidden="true"></span>
+              Gluten-Free
+            </label>
+            <label class="checkbox-item">
+              <input type="checkbox" formControlName="halal" />
+              <span class="checkbox-custom" aria-hidden="true"></span>
+              Halal
+            </label>
+          </div>
+        </div>
+      </form>
+
+      <div class="step-actions">
+        <button class="btn-back" (click)="prevStep()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+          Back
+        </button>
+        <button class="btn-next" (click)="nextStep()">
+          Review Booking
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Review & Confirm -->
+    <div class="step-card" *ngIf="currentStep === 3" aria-label="Step 3: Review and Confirm">
+      <h2 class="step-title">Review Your Booking</h2>
+      <p class="step-desc">Please confirm all details before submitting.</p>
+
+      <div class="review-summary">
+        <div class="review-section">
+          <h3>Trip Details</h3>
+          <div class="review-row">
+            <span>Destination</span>
+            <strong>{{ step1Form.get('destination')!.value }}</strong>
+          </div>
+          <div class="review-row">
+            <span>Check-in</span>
+            <strong>{{ step1Form.get('checkIn')!.value | date:'mediumDate' }}</strong>
+          </div>
+          <div class="review-row">
+            <span>Check-out</span>
+            <strong>{{ step1Form.get('checkOut')!.value | date:'mediumDate' }}</strong>
+          </div>
+          <div class="review-row">
+            <span>Travelers</span>
+            <strong>{{ step1Form.get('travelers')!.value }}</strong>
+          </div>
+          <div class="review-row">
+            <span>Package</span>
+            <strong>{{ getSelectedTripType()?.emoji }} {{ getSelectedTripType()?.label }}</strong>
+          </div>
+          <div class="review-row" *ngIf="groupDiscount > 0">
+            <span>Group Discount</span>
+            <strong class="discount-tag">-{{ groupDiscount }}% applied</strong>
+          </div>
+        </div>
+        <div class="review-section">
+          <h3>Contact Details</h3>
+          <div class="review-row">
+            <span>Name</span>
+            <strong>{{ step2Form.get('fullName')!.value }}</strong>
+          </div>
+          <div class="review-row">
+            <span>Email</span>
+            <strong>{{ step2Form.get('email')!.value }}</strong>
+          </div>
+          <div class="review-row">
+            <span>Phone</span>
+            <strong>{{ step2Form.get('phone')!.value }}</strong>
+          </div>
+        </div>
+        <div class="review-section" *ngIf="getSelectedTripType()?.inclusions?.length">
+          <h3>Package Inclusions</h3>
+          <ul class="review-inclusions">
+            <li *ngFor="let inc of getSelectedTripType()!.inclusions">{{ inc }}</li>
+          </ul>
+        </div>
+        <div class="price-summary">
+          <span class="price-label">Estimated Total</span>
+          <span class="price-amount">{{ estimatedPrice() }}</span>
+          <p class="price-note">
+            Final price may vary based on availability. Our team will confirm within 24 hours.
+            <span *ngIf="groupDiscount > 0" class="discount-note">Group discount of {{ groupDiscount }}% has been applied.</span>
+          </p>
+        </div>
+      </div>
+
+      <form [formGroup]="step3Form" (ngSubmit)="onSubmit()">
+        <label class="checkbox-item terms-check">
+          <input type="checkbox" formControlName="agreeTerms" />
+          <span class="checkbox-custom" aria-hidden="true"></span>
+          I agree to the <a href="#" class="terms-link" target="_blank">Terms &amp; Conditions</a> and <a href="#" class="terms-link" target="_blank">Privacy Policy</a>
+        </label>
+        <p class="field-error" *ngIf="isFieldInvalid(step3Form, 'agreeTerms')" role="alert">You must accept the terms to proceed.</p>
+
+        <div class="step-actions">
+          <button type="button" class="btn-back" (click)="prevStep()">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            Back
+          </button>
+          <button type="submit" class="btn-submit">
+            Confirm Booking
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polyline points="20 6 9 17 4 12"/></svg>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

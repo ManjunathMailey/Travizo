@@ -1,0 +1,146 @@
+<!-- ─── Page Hero ─── -->
+<section class="dest-hero grain-overlay" aria-label="Destinations page hero">
+  <div class="dest-hero-bg"></div>
+  <div class="dest-hero-overlay"></div>
+  <div class="dest-hero-content">
+    <p class="dest-hero-eyebrow"> HANDPICKED DESTINATIONS</p>
+    <h1 class="dest-hero-title">Discover Destinations</h1>
+    <p class="dest-hero-sub">India's most breathtaking landscapes, waiting to be explored</p>
+  </div>
+</section>
+
+<!-- ─── Search Bar ─── -->
+<div class="search-wrap">
+  <div class="search-card">
+    <svg class="search-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+      <circle cx="11" cy="11" r="8"/>
+      <path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input
+      type="search"
+      class="search-input"
+      placeholder="Search by destination, region, or experience..."
+      [(ngModel)]="searchQuery"
+      aria-label="Search destinations"
+    />
+    <button *ngIf="searchQuery" class="search-clear" (click)="clearSearch()" aria-label="Clear search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+</div>
+
+<!-- ─── Main Content ─── -->
+<section class="destinations-section">
+  <div class="container">
+    <!-- Trip Therapy Mood Bar -->
+    <div class="mood-therapy-bar">
+      <p class="mood-bar-label">✨ Trip Therapy — How are you feeling today?</p>
+      <div class="mood-bar-chips">
+        <button
+          *ngFor="let mood of moods"
+          class="mood-chip"
+          [class.mood-chip-active]="activeMood === mood.id"
+          (click)="selectMood(mood.id)"
+          type="button"
+        >{{ mood.icon }} {{ mood.label }}</button>
+        <button *ngIf="activeMood" class="mood-chip mood-chip-clear" (click)="selectMood(activeMood)" type="button">✕ Clear</button>
+      </div>
+    </div>
+
+    <!-- Filter Chips -->
+    <div class="filter-row" role="group" aria-label="Filter destinations by type">
+      <button
+        *ngFor="let filter of filters"
+        class="filter-chip"
+        [class.active]="activeFilter === filter"
+        (click)="setFilter(filter)"
+        [attr.aria-pressed]="activeFilter === filter"
+      >
+        <span *ngIf="filterEmoji[filter]">{{ filterEmoji[filter] }}</span>
+        {{ filter }}
+      </button>
+    </div>
+
+    <!-- Results Count -->
+    <p class="results-count" aria-live="polite">
+      Showing <strong>{{ filteredDestinations.length }}</strong> destination{{ filteredDestinations.length !== 1 ? 's' : '' }}
+      <span *ngIf="activeFilter !== 'All'"> in <em>{{ activeFilter }}</em></span>
+      <span *ngIf="searchQuery"> for "<em>{{ searchQuery }}</em>"</span>
+    </p>
+
+    <!-- Card Grid -->
+    <div class="dest-grid" *ngIf="filteredDestinations.length > 0" role="list">
+      <article
+        class="dest-card"
+        *ngFor="let dest of filteredDestinations; let i = index"
+        role="listitem"
+        animateOnScroll
+      >
+        <!-- Image -->
+        <div class="card-img-wrap">
+          <img
+            [src]="getImage(dest.id)"
+            [alt]="dest.name + ' — ' + dest.type + ', India'"
+            loading="lazy"
+            decoding="async"
+            class="card-img"
+          />
+          <span class="card-type-badge">{{ dest.type }}</span>
+          <button
+            class="save-btn"
+            [class.saved]="isSaved(dest.id)"
+            (click)="toggleSave(dest.id, $event)"
+            [attr.aria-label]="(isSaved(dest.id) ? 'Remove ' : 'Save ') + dest.name"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+            </svg>
+          </button>
+          <!-- Hover Reveal -->
+          <div class="card-hover-reveal" aria-hidden="true">
+            <a [routerLink]="['/destinations', dest.id]" class="card-reveal-link" tabindex="-1">View Details →</a>
+          </div>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body">
+          <h3 class="card-name">{{ dest.name }}</h3>
+          <p class="card-meta">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+            </svg>
+            {{ dest.duration }}
+            <span class="dot" aria-hidden="true">·</span>
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+            </svg>
+            {{ dest.popularity }}/5
+          </p>
+          <p class="card-summary">{{ dest.summary }}</p>
+          <a [routerLink]="['/destinations', dest.id]" class="card-cta" [attr.aria-label]="'Explore ' + dest.name">
+            Explore
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+          </a>
+        </div>
+      </article>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" *ngIf="filteredDestinations.length === 0" animateOnScroll>
+      <img
+        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=80"
+        alt="Morning dew on leaves — no results found"
+        loading="lazy"
+        decoding="async"
+        class="empty-img"
+      />
+      <h3>No destinations found</h3>
+      <p>Try adjusting your filters or search term to discover more escapes.</p>
+      <button class="btn-reset" (click)="clearSearch(); setFilter('All')">Reset Filters</button>
+    </div>
+  </div>
+</section>

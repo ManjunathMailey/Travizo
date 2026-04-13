@@ -1,0 +1,242 @@
+<!-- ─── Hero ─── -->
+<section class="admin-hero grain-overlay" aria-label="Booking history hero">
+  <div class="admin-hero-bg"></div>
+  <div class="admin-hero-overlay"></div>
+  <div class="admin-hero-content">
+    <p class="admin-hero-eyebrow">My Account</p>
+    <h1 class="admin-hero-title">My Booking History</h1>
+    <p class="admin-hero-sub">All your trips, itineraries, and travel memories — in one place</p>
+  </div>
+</section>
+
+<!-- ─── Auth Guard ─── -->
+<section class="admin-auth-wall" *ngIf="!isLoggedIn">
+  <div class="container">
+    <div class="admin-auth-card">
+      <span class="admin-lock-icon" aria-hidden="true">🗺️</span>
+      <h2>Sign In to See Your Trips</h2>
+      <p>Your booking history will appear here after you log in.</p>
+      <a routerLink="/" class="admin-back-btn">Back to Home</a>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Dashboard Content ─── -->
+<div class="admin-wrapper" *ngIf="isLoggedIn">
+  <div class="container">
+
+    <!-- ─── Welcome Banner ─── -->
+    <div class="welcome-banner" animateOnScroll>
+      <div class="welcome-text">
+        <h2>Welcome back, {{ currentUser?.name }}! 👋</h2>
+        <p>Here's a summary of all your journeys with TRAVIZO.</p>
+      </div>
+      <a routerLink="/booking" class="btn-new-trip">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Book New Trip
+      </a>
+    </div>
+
+    <!-- ─── Stats Cards ─── -->
+    <div class="stats-grid" animateOnScroll>
+      <div class="stat-card stat-bookings">
+        <div class="stat-icon" aria-hidden="true">✈️</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalTrips }}</span>
+          <span class="stat-label">My Trips</span>
+        </div>
+      </div>
+      <div class="stat-card stat-revenue">
+        <div class="stat-icon" aria-hidden="true">🌍</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ uniqueDestCount }}</span>
+          <span class="stat-label">Destinations</span>
+        </div>
+      </div>
+      <div class="stat-card stat-packages">
+        <div class="stat-icon" aria-hidden="true">👥</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ totalTravelers }}</span>
+          <span class="stat-label">Total Travelers</span>
+        </div>
+      </div>
+      <div class="stat-card stat-travelers">
+        <div class="stat-icon" aria-hidden="true">💰</div>
+        <div class="stat-info">
+          <span class="stat-value">{{ formatCurrency(totalSpent) }}</span>
+          <span class="stat-label">Amount Spent</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ─── Filter & Search Bar ─── -->
+    <div class="filter-bar" *ngIf="allBookings.length > 0" animateOnScroll>
+      <!-- Search -->
+      <div class="filter-search-wrap">
+        <svg class="filter-search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input
+          type="text"
+          class="filter-search-input"
+          placeholder="Search by destination, package or reference…"
+          [(ngModel)]="searchQuery"
+          aria-label="Search bookings"
+        />
+        <button *ngIf="searchQuery" class="filter-clear-x" (click)="searchQuery=''" aria-label="Clear search">×</button>
+      </div>
+
+      <!-- Destination Filter -->
+      <div class="filter-select-wrap">
+        <select class="filter-select" [(ngModel)]="filterDestination" aria-label="Filter by destination">
+          <option value="">All Destinations</option>
+          <option *ngFor="let dest of uniqueDestinations" [value]="dest">{{ dest }}</option>
+        </select>
+      </div>
+
+      <!-- Sort -->
+      <div class="filter-select-wrap">
+        <select class="filter-select" [(ngModel)]="sortOrder" aria-label="Sort bookings">
+          <option value="newest">Newest First</option>
+          <option value="oldest">Oldest First</option>
+          <option value="highest">Highest Amount</option>
+          <option value="lowest">Lowest Amount</option>
+        </select>
+      </div>
+
+      <!-- Clear Filters -->
+      <button class="filter-clear-btn" (click)="clearFilters()"
+        *ngIf="searchQuery || filterDestination || sortOrder !== 'newest'">
+        Clear Filters
+      </button>
+    </div>
+
+    <!-- ─── Bookings Table ─── -->
+    <div class="bookings-table-card" *ngIf="allBookings.length > 0" animateOnScroll>
+      <div class="table-title-row">
+        <h3 class="table-title">My Trips</h3>
+        <span class="results-count" *ngIf="filteredBookings.length !== allBookings.length">
+          Showing {{ filteredBookings.length }} of {{ allBookings.length }} trips
+        </span>
+      </div>
+
+      <!-- Results found -->
+      <div class="table-scroll" *ngIf="filteredBookings.length > 0">
+        <table class="bookings-table">
+          <thead>
+            <tr>
+              <th>Reference</th>
+              <th>Destination</th>
+              <th>Package</th>
+              <th>Check-in</th>
+              <th>Check-out</th>
+              <th class="center">Travelers</th>
+              <th class="amount">Amount</th>
+              <th>Booked On</th>
+              <th class="center">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let booking of filteredBookings">
+              <td><span class="ref-badge">{{ booking.ref }}</span></td>
+              <td class="dest-cell">
+                <span class="dest-name">{{ booking.destination }}</span>
+              </td>
+              <td>{{ booking.packageEmoji }} {{ booking.packageName }}</td>
+              <td>{{ formatDate(booking.checkIn) }}</td>
+              <td>{{ formatDate(booking.checkOut) }}</td>
+              <td class="center">{{ booking.travelers }}</td>
+              <td class="amount">{{ booking.totalAmount }}</td>
+              <td class="muted">{{ formatDateTime(booking.bookedAt) }}</td>
+              <td class="center actions-cell">
+                <button class="action-btn action-modify" (click)="openModify(booking)" title="Modify booking">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Modify
+                </button>
+                <button class="action-btn action-cancel" (click)="cancelBooking(booking)" title="Cancel booking">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                  Cancel
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- No results after filter -->
+      <div class="no-results" *ngIf="filteredBookings.length === 0">
+        <span aria-hidden="true">🔍</span>
+        <p>No trips match your search. <button class="clear-link" (click)="clearFilters()">Clear filters</button></p>
+      </div>
+    </div>
+
+    <!-- ─── Empty State ─── -->
+    <div class="empty-state" *ngIf="allBookings.length === 0" animateOnScroll>
+      <span class="empty-icon" aria-hidden="true">🧳</span>
+      <h3>No Trips Yet</h3>
+      <p>Your booking history will appear here once you book your first adventure.</p>
+      <a routerLink="/booking" class="empty-cta">Book Your First Trip</a>
+    </div>
+
+  </div>
+</div>
+
+<!-- ─── Trip Therapy: Next Adventure ─── -->
+<section class="therapy-next-section" *ngIf="isLoggedIn" aria-label="Trip Therapy recommendations">
+  <div class="container">
+    <div class="therapy-next-inner" animateOnScroll>
+      <div class="therapy-next-header">
+        <p class="therapy-next-eyebrow">✨ TRIP THERAPY</p>
+        <h2 class="therapy-next-title">What's Your Next Adventure?</h2>
+        <p class="therapy-next-sub">Tell us your mood and we'll suggest your perfect Indian escape</p>
+      </div>
+      <div class="therapy-next-moods">
+        <a routerLink="/destinations" [queryParams]="{mood: 'serene'}" class="therapy-next-mood-btn">
+          🌊 <span>Serene Escape</span>
+        </a>
+        <a routerLink="/destinations" [queryParams]="{mood: 'adrenaline'}" class="therapy-next-mood-btn">
+          ⛰️ <span>Adrenaline Rush</span>
+        </a>
+        <a routerLink="/destinations" [queryParams]="{mood: 'hearts'}" class="therapy-next-mood-btn">
+          💕 <span>Hearts Entwined</span>
+        </a>
+        <a routerLink="/destinations" [queryParams]="{mood: 'soul'}" class="therapy-next-mood-btn">
+          🕌 <span>Soul Seeking</span>
+        </a>
+        <a routerLink="/destinations" [queryParams]="{mood: 'tropical'}" class="therapy-next-mood-btn">
+          🏖️ <span>Tropical Paradise</span>
+        </a>
+        <a routerLink="/destinations" [queryParams]="{mood: 'urban'}" class="therapy-next-mood-btn">
+          🏙️ <span>Urban Canvas</span>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── Modify Booking Modal ─── -->
+<div class="modify-backdrop" *ngIf="editingBooking" (click)="cancelModify()" aria-modal="true" role="dialog" aria-label="Modify booking">
+  <div class="modify-modal" (click)="$event.stopPropagation()">
+    <div class="modify-header">
+      <h3>Modify Booking</h3>
+      <button class="modify-close" (click)="cancelModify()" aria-label="Close">×</button>
+    </div>
+    <p class="modify-ref">Ref: <strong>{{ editingBooking.ref }}</strong> — {{ editingBooking.destination }}</p>
+    <div class="modify-form">
+      <label class="modify-label">
+        Check-in Date
+        <input type="date" class="modify-input" [(ngModel)]="editCheckIn" />
+      </label>
+      <label class="modify-label">
+        Check-out Date
+        <input type="date" class="modify-input" [(ngModel)]="editCheckOut" />
+      </label>
+      <label class="modify-label">
+        Number of Travelers
+        <input type="number" class="modify-input" [(ngModel)]="editTravelers" min="1" max="20" />
+      </label>
+    </div>
+    <div class="modify-actions">
+      <button class="modify-btn-save" (click)="saveModify()">Save Changes</button>
+      <button class="modify-btn-cancel" (click)="cancelModify()">Discard</button>
+    </div>
+  </div>
+</div>
