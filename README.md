@@ -244,7 +244,7 @@ ng deploy --base-href=/<your-repo-name>/
 
 ## Team
 
-Developed by **Batch 8 — Feb 2026** as part of the **Springboard Internship Program**.
+Developed by **Batch 13 — Feb 2026** as part of the **Springboard Internship Program**.
 
 ---
 
